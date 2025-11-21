@@ -37,16 +37,10 @@ public class VattenPlugin {
     @Getter(AccessLevel.PACKAGE)
     private final EventHandler eventHandler = new EventHandler(this);
 
-    @Getter
-    private final String name;
-    @Getter
-    private final String displayName;
-    @Getter
-    private final String version;
-
     private final VattenPlatform<?, ?> pluginInterface;
     @Getter
-    private final Type type;
+    private final PluginInfo pluginInfo;
+
     @Getter
     private final API api = new API();
     @Getter(AccessLevel.PACKAGE)
@@ -56,7 +50,6 @@ public class VattenPlugin {
 
     private VattenPlugin(VattenPlatform<?, ?> pluginInterface, Type type, Path path) {
         this.pluginInterface = pluginInterface;
-        this.type = type;
         this.path = path;
 
         Properties p = new Properties();
@@ -65,9 +58,7 @@ public class VattenPlugin {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        this.name = p.getProperty("name");
-        this.displayName = p.getProperty("displayName");
-        this.version = p.getProperty("version");
+        this.pluginInfo = new PluginInfo(p.getProperty("name"), p.getProperty("displayName"), p.getProperty("version"), type);
 
         PLUGIN_CONFIG = new ConfigInstance<>(this, "config", PluginConfig.class);
         LOCALES_CONFIG = new ConfigInstance<>(this, "locales", LocalesConfig.class);

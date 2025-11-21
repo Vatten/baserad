@@ -32,7 +32,7 @@ public class TestCommand extends Command {
     @Override
     public void execute(VattenPlayer player, String[] args) {
         player.sendMessage(Component.text("Yoyo man", NamedTextColor.YELLOW));
-        player.sendMessage(Component.text(plugin.getName() + " " + plugin.getDisplayName() + " v" + plugin.getVersion(), NamedTextColor.LIGHT_PURPLE));
+        player.sendMessage(Component.text(plugin.getPluginInfo().name() + " " + plugin.getPluginInfo().displayName() + " v" + plugin.getPluginInfo().version() + " " + plugin.getPluginInfo().type(), NamedTextColor.LIGHT_PURPLE));
     }
 
     @Override
