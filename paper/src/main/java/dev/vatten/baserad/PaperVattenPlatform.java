@@ -22,6 +22,7 @@ import dev.vatten.baserad.events.PlayerLoadInEvent;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.event.player.PlayerClientLoadedWorldEvent;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,11 +39,11 @@ public class PaperVattenPlatform extends JavaPlugin implements VattenPlatform<Pl
 
     @Override
     public void onEnable() {
-        this.plugin = VattenPlugin.builder()
-                .setPlatformInterface(this)
-                .setType(VattenPlugin.Type.SERVER)
-                .setDataDirectory(this.getDataFolder().toPath())
-                .build();
+        this.plugin = new Plugin(
+                this,
+                VattenPlugin.Type.SERVER,
+                this.getDataFolder().toPath()
+        );
 
         getServer().getPluginManager().registerEvents(this, this);
 

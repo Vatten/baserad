@@ -54,11 +54,11 @@ public class VelocityVattenPlatform implements VattenPlatform<Player, ScheduledT
 
     @Subscribe
     public void onProxyInitialize(ProxyInitializeEvent event) {
-        this.plugin = VattenPlugin.builder()
-                .setPlatformInterface(this)
-                .setType(VattenPlugin.Type.PROXY)
-                .setDataDirectory(this.dataDirectory)
-                .build();
+        this.plugin = new Plugin(
+                this,
+                VattenPlugin.Type.PROXY,
+                this.dataDirectory
+        );
     }
 
     @Override

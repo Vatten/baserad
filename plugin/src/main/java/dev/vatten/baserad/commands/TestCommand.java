@@ -14,11 +14,10 @@
  *    limitations under the License.
  */
 
-package dev.vatten.baserad.commands.impl;
+package dev.vatten.baserad.commands;
 
 import dev.vatten.baserad.VattenPlayer;
 import dev.vatten.baserad.VattenPlugin;
-import dev.vatten.baserad.commands.Command;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 

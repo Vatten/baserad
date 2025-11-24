@@ -17,7 +17,6 @@
 package dev.vatten.baserad;
 
 import dev.vatten.baserad.commands.Command;
-import dev.vatten.baserad.commands.impl.TestCommand;
 import dev.vatten.baserad.configs.LocalesConfig;
 import dev.vatten.baserad.configs.PluginConfig;
 import dev.vatten.baserad.events.PlayerJoinEvent;
@@ -31,24 +30,24 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class VattenPlugin {
-    private final ConfigInstance<PluginConfig> PLUGIN_CONFIG;
-    private final ConfigInstance<LocalesConfig> LOCALES_CONFIG;
+    protected final ConfigInstance<PluginConfig> PLUGIN_CONFIG;
+    protected final ConfigInstance<LocalesConfig> LOCALES_CONFIG;
 
     @Getter(AccessLevel.PACKAGE)
-    private final EventHandler eventHandler = new EventHandler(this);
+    protected final EventHandler eventHandler = new EventHandler(this);
 
-    private final VattenPlatform<?, ?> pluginInterface;
+    protected final VattenPlatform<?, ?> pluginInterface;
     @Getter
-    private final PluginInfo pluginInfo;
+    protected final PluginInfo pluginInfo;
 
     @Getter
-    private final API api = new API();
+    protected final API api = new API();
     @Getter(AccessLevel.PACKAGE)
-    private final Path path;
+    protected final Path path;
     @Getter(AccessLevel.PACKAGE)
-    private final Map<UUID, VattenPlayer> players = new HashMap<>();
+    protected final Map<UUID, VattenPlayer> players = new HashMap<>();
 
-    private VattenPlugin(VattenPlatform<?, ?> pluginInterface, Type type, Path path) {
+    protected VattenPlugin(VattenPlatform<?, ?> pluginInterface, Type type, Path path) {
         this.pluginInterface = pluginInterface;
         this.path = path;
 
@@ -63,46 +62,34 @@ public class VattenPlugin {
         PLUGIN_CONFIG = new ConfigInstance<>(this, "config", PluginConfig.class);
         LOCALES_CONFIG = new ConfigInstance<>(this, "locales", LocalesConfig.class);
 
-        reload();
-
-        registerCommands(
-                // Commands here
-                new TestCommand(this)
-        );
-
         eventHandler.registerEventHandler(PlayerJoinEvent.class, this::onPlayerJoin);
         eventHandler.registerEventHandler(PlayerLeaveEvent.class, this::onPlayerLeave);
+
+        onEnable();
+        reload();
     }
 
     VattenPlayer getPlayer(UUID uuid) {
         return players.get(uuid);
     }
 
-    private void reload() {
+    protected void onEnable() {
+
+    }
+
+    protected void reload() {
         PLUGIN_CONFIG.load();
         LOCALES_CONFIG.load();
     }
 
-    private void registerCommands(Command... commands) {
+    protected void registerCommands(Command... commands) {
         for (Command command : commands) {
             pluginInterface.registerCommand(command);
         }
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
     private void onPlayerJoin(PlayerJoinEvent event) {
         players.put(event.getPlayer().getUuid(), event.getPlayer());
-        event.getPlayer().sendMessage(Component.text("hello " + event.getPlayer().getName()));
-        ScheduledTask<?> task = pluginInterface.scheduleRepeatingTask(() -> {
-            event.getPlayer().sendMessage(Component.text("Hello from repeating task"));
-        }, 0, 5000);
-        pluginInterface.scheduleTask(() -> {
-            event.getPlayer().sendMessage(Component.text("Hello from task"));
-            task.cancel();
-        }, 15000);
     }
 
     private void onPlayerLeave(PlayerLeaveEvent event) {
@@ -117,32 +104,6 @@ public class VattenPlugin {
     public class API {
         public void reload() {
             VattenPlugin.this.reload();
-        }
-    }
-
-    public static class Builder {
-        private VattenPlatform<?, ?> platformInterface;
-        private Type type;
-        private Path dataDirectory;
-
-        public Builder setPlatformInterface(VattenPlatform<?, ?> platformInterface) {
-            this.platformInterface = platformInterface;
-            return this;
-        }
-
-        public Builder setType(Type type) {
-            this.type = type;
-            return this;
-        }
-
-        public Builder setDataDirectory(Path dataDirectory) {
-            this.dataDirectory = dataDirectory;
-            return this;
-        }
-
-        public VattenPlugin build() {
-            if(platformInterface == null || type == null || dataDirectory == null) throw new NullPointerException();
-            return new VattenPlugin(platformInterface, type, dataDirectory);
         }
     }
 }

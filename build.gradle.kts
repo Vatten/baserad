@@ -39,9 +39,6 @@ allprojects {
 
     dependencies {
         implementation("de.exlll:configlib-yaml:4.6.3")
-        implementation("org.mineskin:java-client-jsoup:3.2.1-SNAPSHOT")
-//        implementation(files("../libs/adventure-text-minimessage.jar"))
-//        implementation("net.kyori:adventure-text-serializer-gson:4.25.0")
         compileOnly("net.kyori:adventure-api:4.25.0")
         compileOnly("net.kyori:adventure-text-minimessage:4.25.0")
         compileOnly("me.clip:placeholderapi:2.11.6")
@@ -57,7 +54,6 @@ allprojects {
     tasks.shadowJar {
         archiveClassifier.set("")
         archiveFileName.set("${pluginName}-${version}.jar")
-        minimize()
     }
 
     license {
